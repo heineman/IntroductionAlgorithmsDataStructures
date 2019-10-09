@@ -262,11 +262,11 @@ Floyd-Warshall has time complexity of O(V^3). The behavior difference
 results from the total number of edges. In the worst case, there is an edge
 between every pair of nodes, for a total of n*(n-1)/2 edges which is on the
 order of n^2. In sparse graphs, the number of edges is much lower, on the
-order of n. Dijkstra's All Pairs Shortest Path with outperform
+order of n. Dijkstra's All Pairs Shortest Path will outperform
 Floyd-Warshall on sparse graphs.
 
 This particular graph has 5,875 nodes and 37,362 edges. There could be a
-total of 17,254,875 edges, but only .22% of these actually exist, thus this
+total of 17,254,875 edges, but only 0.22% of these actually exist, thus this
 is a fine example of a sparse graph.
 
 ## SkipList Behavior
@@ -274,6 +274,22 @@ is a fine example of a sparse graph.
 ```
 $ cd "5. SkipList"
 $ python3 skipList.py
+Average Performance Times
+N	    SL-RND	AVL-RND
+16	    0.0021	0.0007
+32	    0.0025	0.0008
+64	    0.0027	0.0008
+128	    0.0032	0.0010
+256	    0.0034	0.0011
+512	    0.0042	0.0012
+1024	    0.0045	0.0013
+2048	    0.0047	0.0015
+4096	    0.0054	0.0016
+8192	    0.0059	0.0016
+16384	    0.0065	0.0016
+32768	    0.0071	0.0016
+
+Construction Times
 N	SL-RND	AVL-RND	SL-ASC	AVL-ASC	SL-DESC	AVL-DESC
 16	0.094	0.069	0.085	0.072	0.087	0.071
 32	0.203	0.178	0.170	0.183	0.188	0.187
@@ -289,5 +305,5 @@ N	SL-RND	AVL-RND	SL-ASC	AVL-ASC	SL-DESC	AVL-DESC
 32768	515.122	634.220	291.985	605.307	405.287	603.555
 ```
 
-The above table compares the construction time of AVL Binary Trees and
+The second table compares the construction time of AVL Binary Trees and
 SkipList structures for N random integers.

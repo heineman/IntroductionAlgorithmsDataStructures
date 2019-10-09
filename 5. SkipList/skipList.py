@@ -60,9 +60,36 @@ def constructAVL(aList):
         bt.add(val)
     return bt
 
-def outputTiming():
+def search(avl, aList):
+    """Search through structure (either SL or AVL) and return how many elements from aList are found."""
+    ct = 0
+    for v in aList:
+        if v in avl:
+            ct += 1
+    return ct
+
+def outputPerformanceTiming():
     """
-    Generate Timing with random samples for both (a) construction; and (b) access
+    Generate Timing with random samples for both construction
+    """
+    print ('N\tSL-RND\tAVL-RND')
+    for trial in [2**_ for _ in range(4,16)]:
+        build = f'[random.randint(0, 2 ** 12) for _ in range({trial})]'
+        targets = f'[random.randint(0, 2 ** 12) for _ in range({trial})]'
+        averages = {}
+        structures = ['constructSL', 'constructAVL']    
+        for s in structures:
+            averages[s] = timeit.timeit(stmt=f'search(structure, targets)', number=1000,
+                        setup=f'import random\nfrom __main__ import {s},search\nrandom.seed({trial})\ntargets={targets}\nstructure = {s}({build})')
+            averages[s] /= trial
+
+        results = '\t'.join(f'{averages[s]:.4f}' for s in structures)
+                       
+        print (f'{trial}\t{results}')
+
+def outputConstructionTiming():
+    """
+    Generate Timing with random samples for both construction
     """
     print ('N\tSL-RND\tAVL-RND\tSL-ASC\tAVL-ASC\tSL-DESC\tAVL-DESC')
     for trial in [2**_ for _ in range(4,16)]:
@@ -88,5 +115,9 @@ def outputTiming():
         print (f'{trial}\t{results1}\t{results2}\t{results3}')
 
 if __name__ == '__main__':
-    outputTiming()
-    #unittest.main()
+    print ("Average Performance Times")
+    outputPerformanceTiming()
+    print ()
+    print ("Construction Times")
+    outputConstructionTiming()
+    
