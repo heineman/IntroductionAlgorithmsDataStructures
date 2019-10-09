@@ -262,7 +262,8 @@ Floyd-Warshall has time complexity of O(V^3). The behavior difference
 results from the total number of edges. In the worst case, there is an edge
 between every pair of nodes, for a total of n*(n-1)/2 edges which is on the
 order of n^2. In sparse graphs, the number of edges is much lower, on the
-order of n.
+order of n. Dijkstra's All Pairs Shortest Path with outperform
+Floyd-Warshall on sparse graphs.
 
 This particular graph has 5,875 nodes and 37,362 edges. There could be a
 total of 17,254,875 edges, but only .22% of these actually exist, thus this
