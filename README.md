@@ -271,6 +271,10 @@ is a fine example of a sparse graph.
 
 ## SkipList Behavior
 
+The first table below reports the average search time for an element in a
+Skip List or AVL tree containing N random integers (sometimes the element
+is in the structure, sometimes it is not).
+
 ```
 $ cd "5. SkipList"
 $ python3 skipList.py
