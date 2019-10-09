@@ -295,7 +295,7 @@ def floydWarshall(G):
     maxFound = 0
     maxi = maxj = -1
     for i in range(n):
-        for j in range(n5):
+        for j in range(n):
             if dist[i][j] > maxFound:
                 maxFound = dist[i][j]
                 maxi = i
@@ -310,6 +310,7 @@ def loadDefaultGraph():
 if __name__ == '__main__':
     print (str(datetime.now()))
     G = loadGraph(wordFile)
+    print ("There are " + str(G.number_of_edges()) + " edges in the graph.")
 
     nowl = list(noWordLadders(G))
     print ("Following " + str(len(nowl)) + " words belong to no word ladder.")

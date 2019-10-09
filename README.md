@@ -126,10 +126,10 @@ N       Insert  Merge   Tim
 512     1.7536  0.3729  0.0048
 1024    7.3282  0.8242  0.0106
 2048    28.7848 1.7879  0.0237
-4096    0.0000  3.8638  0.0508
-8192    0.0000  8.1089  0.1141
-16384   0.0000  17.0846 0.2484
-32768   0.0000  35.9748 0.5271
+4096      ---   3.8638  0.0508
+8192      ---   8.1089  0.1141
+16384     ---   17.0846 0.2484
+32768     ---   35.9748 0.5271
 ```
 
 The first two lines of output briefly confirm InsertionSort and MergeSort
@@ -137,6 +137,10 @@ are working. The table compares the performance of the three sorting
 algorithms when sorting a list formed by concatenating (1) N sorted integers
 from 0 to N-1; with (2) N/4 sorted integers randomly samples from the range
 (0, N/4).
+
+Note that InsertionSort is not run for lists larger than 2048 elements
+because of the quadratic nature of its time complexity. Observe how its
+performance quadruples when the problem size doubles.
 
 TimSort is almost two orders of magnitude faster.
 
@@ -160,6 +164,7 @@ resulting word ladder has 392 words.
 
 
 ```
+There are 37362 edges in the graph.
 Following 60 words belong to no word ladder.
 ['ADZE', 'AKOV', 'ANKH', 'AWFU', 'AWOL', 'CEYX', 'DEGU', 'EBBS', 'ECRU',
 'EFIK', 'EJOO', 'EKOI', 'ELHI', 'ENIF', 'ENKI', 'ENVY', 'EPEE', 'EPHA',
@@ -244,3 +249,40 @@ ISMS	   Degree=1
 Using the NetworkX built-in support for Dijkstra's All Pairs Shortest Path
 algorithm, we can discover the longest Word Ladder in this dictionary
 contains 17 words.
+
+Using my native Python implementation of Floyd-Warshall, a different
+algorithm to solve the same problem, the same result was computed in just
+about eight hours. One reason for the timing difference is that Dijkstra's
+All Pairs Shortest Path has time complexity of O(E log V) while
+Floyd-Warshall has time complexity of O(V^3). The behavior difference
+results from the total number of edges. In the worst case, there is an edge
+between every pair of nodes, for a total of n*(n-1)/2 edges which is on the
+order of n^2. In sparse graphs, the number of edges is much lower, on the
+order of n.
+
+This particular graph has 5,875 nodes and 37,362 edges. There could be a
+total of 17,254,875 edges, but only .22% of these actually exist, thus this
+is a fine example of a sparse graph.
+
+## SkipList Behavior
+
+```
+$ cd "5. SkipList"
+$ python3 skipList.py
+N	SL-RND	AVL-RND	SL-ASC	AVL-ASC	SL-DESC	AVL-DESC
+16	0.094	0.069	0.085	0.072	0.087	0.071
+32	0.203	0.178	0.170	0.183	0.188	0.187
+64	0.453	0.435	0.354	0.448	0.399	0.449
+128	1.001	1.035	0.754	1.061	0.882	1.069
+256	2.217	2.347	1.566	2.428	1.904	2.427
+512	4.899	5.360	3.359	5.518	4.163	5.491
+1024	10.727	12.200	7.108	12.429	9.072	12.394
+2048	23.726	27.469	14.965	27.582	19.385	27.568
+4096	51.944	60.905	31.856	59.166	42.000	59.329
+8192	110.930	132.412	66.509	130.233	89.444	130.967
+16384	239.637	289.048	139.736	281.538	190.898	282.001
+32768	515.122	634.220	291.985	605.307	405.287	603.555
+```
+
+The above table compares the construction time of AVL Binary Trees and
+SkipList structures for N random integers.
