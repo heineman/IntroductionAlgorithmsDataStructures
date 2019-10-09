@@ -6,10 +6,11 @@ This repository contains the code associated with the "Introduction to Algorithm
 The code examples are referred to in the slides.  Here are sample
 executions. All examples are derived by running Python 3.6 on Linux.
 Start in the current directory and change directory (cd) into the different
-subdirectories to execute the code as you see below. Note that the 
-run-time and performance numbers in this README file will not exactly 
-match the empirical numbers in the slides because, as you should know,
-your mileage may vary when running this code on different operating
+subdirectories to execute the code as you see below.
+
+Note that the run-time and performance numbers in this README file will not
+exactly match the empirical numbers in the slides because, as you should
+know, your mileage may vary when running this code on different operating
 systems and machines.
 
 ## Algorithm Formalities
@@ -76,7 +77,7 @@ Integer."
 ## Performance Comparison
 
 ```
-cd "2. Basic Data Structures"
+$ cd "2. Basic Data Structures"
 $ python3 queueWordLadder.py
 ['COLD', 'CORD', 'CARD', 'WARD', 'WARM']
 
@@ -95,7 +96,7 @@ English word, there are three possibile approaches:
 ## Word Ladder Summary
 
 ```
-cd "2. Basic Data Structures"
+$ cd "2. Basic Data Structures"
 $ python3 queueTimingThreeWordLadder.py
 Queue   List            BASearch        Dictionary
 DQ      405.722967      14.274099       2.756425
@@ -114,7 +115,8 @@ supporting thread-safe operations.
 ## Comparison to Sorting Methods
 
 ```
-cd "3. Sorting Algorithms"
+$ cd "3. Sorting Algorithms"
+$ python3 sorting.py
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 N       Insert  Merge   Tim
@@ -164,6 +166,8 @@ resulting word ladder has 392 words.
 
 
 ```
+$ cd "4. Graph Algorithms"
+$ python3 graphCode.py
 There are 37362 edges in the graph.
 Following 60 words belong to no word ladder.
 ['ADZE', 'AKOV', 'ANKH', 'AWFU', 'AWOL', 'CEYX', 'DEGU', 'EBBS', 'ECRU',
