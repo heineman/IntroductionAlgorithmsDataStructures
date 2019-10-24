@@ -86,7 +86,7 @@ class TimingTest(unittest.TestCase):
         self.assertTrue(uniqueCheckLoop(self.numbersWithDuplicate))
         self.assertFalse(uniqueCheckLoop(self.numbers))
 
-def outputTiming():
+def outputTiming(end):
     """
     Generate timing report using random integers from 0 to 16777216,
     which greatly reduces the chance that a duplicate exists, thus
@@ -94,7 +94,7 @@ def outputTiming():
     to produce identical number sets across different approaches.
     """
     print ('N\tSum     \tSet\t        String\t        Loop')
-    for trial in [2**_ for _ in range(1,11)]:
+    for trial in [2**_ for _ in range(1,end)]:
         numbers = f'[random.randint(0, 2 ** 24) for _ in range({trial})]'
      
         methods = ['sumValues', 'uniqueCheckSet', 'uniqueCheckString', 'uniqueCheckLoop' ]
@@ -107,7 +107,7 @@ def outputTiming():
         print (f'{trial}\t{results}')
 
 if __name__ == '__main__':
-    outputTiming()
+    outputTiming(9)
     unittest.main()
     
 
