@@ -148,7 +148,8 @@ TimSort is almost two orders of magnitude faster.
 
 ## Tasks to Solve 1, 2,3
 
-This code takes the longest to run. 
+This code takes the longest to run. The code in this section requires
+a NetworkX installation (https://pypi.org/project/networkx/)
 
 First it solves Task #2, finding 60 words that belong to no word ladder.
 
@@ -270,6 +271,9 @@ total of 17,254,875 edges, but only 0.22% of these actually exist, thus this
 is a fine example of a sparse graph.
 
 ## SkipList Behavior
+
+The code in this section requires the pyskiplist implementation which 
+can be found at https://pypi.org/project/pyskiplist/.
 
 The first table below reports the average search time for an element in a
 Skip List or AVL tree containing N random integers (sometimes the element
