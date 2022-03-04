@@ -1,6 +1,23 @@
 """
     Demonstrate use of Skip List and some timing
 
+Stress Test Performance
+N	SL-Stress	AVL-Stress
+16	0.0891		0.0989
+32	0.0926		0.1013
+64	0.0955		0.1071
+128	0.1082		0.1153
+256	0.1328		0.1347
+512	0.1819		0.1783
+1024	0.2872		0.2669
+2048	0.4979		0.4496
+4096	0.9046		0.7969
+8192	1.6538		1.4289
+16384	3.0994		2.5919
+32768	5.6789		4.8394
+
+AVL trees outperform SkipLists on randomized stress tests
+
 Average Performance Times
 N           SL-RND      AVL-RND
 16          0.0021      0.0007
@@ -40,8 +57,6 @@ import timeit
 
 from avl import BinaryTree
 
-
-
 class SkipListTest(unittest.TestCase):
     """
     Unit test cases to briefly validate methods.
@@ -62,6 +77,14 @@ class SkipListTest(unittest.TestCase):
     def testCheckBinaryArraySearch(self):
         self.assertTrue(binaryArraySearch(self.numbers, self.target))
         self.assertFalse(binaryArraySearch(self.numbers, -1))
+
+def addToAVL(avl, val):
+    """To overcome API mismatch, use this function for adding to AVL."""
+    avl.add(val)
+
+def addToSkipList(sl, val):
+    """To overcome API mismatch, use this function for adding to SkipList."""
+    sl.insert(val,val)
 
 def constructSL(aList):
     """Create SkipList from random sample."""
@@ -84,22 +107,57 @@ def search(avl, aList):
             ct += 1
     return ct
 
+def stressTest(collection, adder, numSteps):
+    """Stress test (either an AVL or a SkipList)."""
+    for _ in range(1000):
+        adder(collection, random.randint(0, 2 ** 12))
+
+    # now take turns randomly inserting, or deleting values
+    for _ in range(numSteps):
+        r = random.randint(0, 2 ** 12)
+        if r in collection:
+            collection.remove(r)
+        else:
+            adder(collection, r)
+            
+    # at end, try to remove whole bunch only
+    for _ in range(numSteps):
+        r = random.randint(0, 2 ** 12)
+        if r in collection:
+            collection.remove(r)
+
+def stressTestTiming():
+    """
+    Generate Timing for both constructions
+    """
+    print ('N\tSL-Stress\tAVL-Stress')
+    for trial in [2**_ for _ in range(4,15)]:
+        averages = {}
+        structures = [addToSkipList, addToAVL]    
+        averages['AVL'] = timeit.timeit(stmt=f'stressTest(BinaryTree(), addToAVL, {trial})', number=10,
+                        setup=f'import random\nfrom avl import BinaryTree\nfrom __main__ import stressTest,addToAVL\nrandom.seed({trial})')/10
+
+        averages['SL'] = timeit.timeit(stmt=f'stressTest(SkipList(), addToSkipList, {trial})', number=10,
+                        setup=f'import random\nfrom pyskiplist import SkipList\nfrom __main__ import stressTest,addToSkipList\nrandom.seed({trial})')/10
+
+        results = '\t'.join(f'{averages[s]:.4f}' for s in ['SL', 'AVL'])
+                       
+        print (f'{trial}\t{results}')
+     
 def outputPerformanceTiming():
     """
     Generate Timing with random samples for both construction
     """
     print ('N\tSL-RND\tAVL-RND')
-    for trial in [2**_ for _ in range(4,16)]:
+    for trial in [2**_ for _ in range(4,15)]:
         build = f'[random.randint(0, 2 ** 12) for _ in range({trial})]'
         targets = f'[random.randint(0, 2 ** 12) for _ in range({trial})]'
-        averages = {}
+        trials = {}
         structures = ['constructSL', 'constructAVL']    
         for s in structures:
-            averages[s] = timeit.timeit(stmt=f'search(structure, targets)', number=1000,
-                        setup=f'import random\nfrom __main__ import {s},search\nrandom.seed({trial})\ntargets={targets}\nstructure = {s}({build})')
-            averages[s] /= trial
-
-        results = '\t'.join(f'{averages[s]:.4f}' for s in structures)
+            trials[s] = timeit.timeit(stmt=f'search(structure, targets)', number=100,
+                        setup=f'import random\nfrom __main__ import {s},search\nrandom.seed({trial})\ntargets={targets}\nstructure = {s}({build})')/100
+        results = '\t'.join(f'{trials[s]:.4f}' for s in structures)
                        
         print (f'{trial}\t{results}')
 
@@ -108,27 +166,23 @@ def outputConstructionTiming():
     Generate Timing with random samples for both construction
     """
     print ('N\tSL-RND\tAVL-RND\tSL-ASC\tAVL-ASC\tSL-DESC\tAVL-DESC')
-    for trial in [2**_ for _ in range(4,16)]:
+    for trial in [2**_ for _ in range(4,15)]:
         numbers = f'random.sample(range({trial}),{trial})'
      
         methods = ['constructSL', 'constructAVL']
         counts = {}
         ascending = {}
-        descending = {}
             
         for meth in methods:
-            counts[meth] = timeit.timeit(stmt=f'{meth}(numbers)', number=1000,
-                        setup=f'import random\nfrom __main__ import {meth}\nrandom.seed({trial})\nnumbers = {numbers}')
-            ascending[meth] = timeit.timeit(stmt=f'{meth}(numbers)', number=1000,
-                        setup=f'import random\nfrom __main__ import {meth}\nrandom.seed({trial})\nnumbers = list(range({trial}))')
-            descending[meth] = timeit.timeit(stmt=f'{meth}(numbers)', number=1000,
-                        setup=f'import random\nfrom __main__ import {meth}\nrandom.seed({trial})\nnumbers = list(reversed(range({trial})))')
+            counts[meth] = timeit.timeit(stmt=f'{meth}(numbers)', number=100,
+                        setup=f'import random\nfrom __main__ import {meth}\nrandom.seed({trial})\nnumbers = {numbers}')/100
+            ascending[meth] = timeit.timeit(stmt=f'{meth}(numbers)', number=100,
+                        setup=f'import random\nfrom __main__ import {meth}\nrandom.seed({trial})\nnumbers = list(range({trial}))')/100
 
         results1 = '\t'.join(f'{counts[meth]:.3f}' for meth in methods)
         results2 = '\t'.join(f'{ascending[meth]:.3f}' for meth in methods)
-        results3 = '\t'.join(f'{descending[meth]:.3f}' for meth in methods)
                        
-        print (f'{trial}\t{results1}\t{results2}\t{results3}')
+        print (f'{trial}\t{results1}\t{results2}')
 
 if __name__ == '__main__':
     print ("Average Performance Times")
@@ -136,4 +190,7 @@ if __name__ == '__main__':
     print ()
     print ("Construction Times")
     outputConstructionTiming()
+    print ()
+    print ("Stress Test Performance")
+    stressTestTiming()
     
