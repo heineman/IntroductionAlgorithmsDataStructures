@@ -25,7 +25,10 @@ for u in range(8):
         print(len(results[u][v])-1, end=' ')
     print()
     
-    
+import matplotlib.pyplot as plt
+
+nx.draw(G, with_labels=True)
+plt.show()
 
 
 
