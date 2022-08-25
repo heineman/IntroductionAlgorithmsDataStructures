@@ -100,7 +100,7 @@ def neighbors(word, words, isWord):
                 
     return neighbors
 
-def exploreQueue(words, start, end, isWord):
+def exploreQueue(words, start, end, isWord=isWordInDictionary):
     """Using existing collection of words, find ladder from start to end"""
     if not start in words:
         raise Exception (start + " is not a valid four-letter word.")
@@ -110,10 +110,17 @@ def exploreQueue(words, start, end, isWord):
     from collections import deque
     active = deque()
     active.append(Stage(start))
+
+    # Ensure search doesn't waste resources by refusing to visit
+    # same word twice. Without this logic, this code will exceed memory
+    seen = {}
     
     while active:
         st = active.popleft()
-            
+        if st.word in seen:
+            continue
+        
+        seen[st.word] = 1
         for nxt in neighbors(st.word, words, isWord):
             link = Stage(nxt, st)
             if nxt == end:
@@ -121,7 +128,7 @@ def exploreQueue(words, start, end, isWord):
             active.append(link)
 
     # No chain
-    return []
+    return None
 
 def outputTiming(start, end):
     """
@@ -143,10 +150,13 @@ def outputTiming(start, end):
 
 if __name__ == '__main__':
     wds = loadWordsAsDictionary(wordFile)
-    ladder = exploreQueue(wds, 'COLD', 'WARM', isWordInDictionary)
+    ladder = exploreQueue(wds, 'COLD', 'WARM')
     print (ladder.collectTrail())
     print()
 
-    outputTiming('COLD', 'WARM')
+    # Time if you want to
+    #outputTiming('COLD', 'WARM')
+    print("exploreQueue(wds, 'COLD', 'WARM').collectTrail()")
+    
 
 

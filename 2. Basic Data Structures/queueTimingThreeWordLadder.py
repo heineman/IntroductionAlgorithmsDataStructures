@@ -58,7 +58,7 @@ def isWordInSortedList(aList, tgt):
             return True
     return False
 
-def loadWordsAsDictionary(wordList):
+def loadWordsAsDictionary(wordList=wordFile):
     """
     Return Dictionary of four-letter words to explore, each with
     a count of zero.
@@ -75,7 +75,7 @@ def loadWordsAsDictionary(wordList):
            line = fp.readline()
     return words
 
-def loadWordsAsList(wordList):
+def loadWordsAsList(wordList=wordFile):
     """
     Return list of four-letter words to explore.
     """
@@ -171,7 +171,7 @@ def exploreQueueDQ(words, start, end, isWord):
     # No chain
     return []
 
-def outputTiming(start, end):
+def outputTiming(start, end, num):
     """
     Generate timing report for the three different approaches.
     """
@@ -184,11 +184,11 @@ def outputTiming(start, end):
     countsList = {}
     countsQueue = {}
     for trial,load,valid in zip(trials,loadMethods,valids):
-        countsDQ[trial] = timeit.timeit(stmt=f'exploreQueueDQ(words,"{start}","{end}",{valid})', number=5,
+        countsDQ[trial] = timeit.timeit(stmt=f'exploreQueueDQ(words,"{start}","{end}",{valid})', number=num,
                 setup=f'from __main__ import {valid},{load},exploreQueueDQ,wordFile\nwords={load}(wordFile)')
-        countsList[trial] = timeit.timeit(stmt=f'exploreQueueList(words,"{start}","{end}",{valid})', number=5,
+        countsList[trial] = timeit.timeit(stmt=f'exploreQueueList(words,"{start}","{end}",{valid})', number=num,
                 setup=f'from __main__ import {valid},{load},exploreQueueList,wordFile\nwords={load}(wordFile)')
-        countsQueue[trial] = timeit.timeit(stmt=f'exploreQueueQueue(words,"{start}","{end}",{valid})', number=5,
+        countsQueue[trial] = timeit.timeit(stmt=f'exploreQueueQueue(words,"{start}","{end}",{valid})', number=num,
                 setup=f'from __main__ import {valid},{load},exploreQueueQueue,wordFile\nwords={load}(wordFile)')
 
     print ("DQ\t" + '\t'.join(f'{countsDQ[trial]:f}' for trial in trials))
@@ -196,6 +196,6 @@ def outputTiming(start, end):
     print ("Q\t" + '\t'.join(f'{countsQueue[trial]:f}' for trial in trials))
 
 if __name__ == '__main__':
-    outputTiming('COLD', 'WARM')
+    outputTiming('COLD', 'WARM', 1)
 
 
